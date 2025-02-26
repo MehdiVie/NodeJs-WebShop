@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const Order = require('../models/order');
 const mongoose = require('mongoose');
+const PDFDocument = require('pdfkit');
 
 
 exports.getIndex = (req, res, next)=>{
@@ -215,7 +216,46 @@ exports.getInvoice = (req , res , next) => {
             }
             const invoiceName = 'invoice-'+ orderId + '.pdf';
             const invoicePath = path.join('data' , 'invoices' , invoiceName);
-            fs.readFile(invoicePath , (err, data) => {
+
+            const pdfDoc = new PDFDocument();
+
+            res.setHeader('Content-Type','application/pdf');
+            res.setHeader(
+                'Content-Disposition',
+                'inline; filename="' + invoiceName + '"');
+
+            pdfDoc.pipe(fs.createWriteStream(invoicePath));
+            pdfDoc.pipe(res);
+
+            pdfDoc.fontSize(22).text('Invoice' , {
+                underline : true
+            });
+            pdfDoc.text('----------------');
+            let count= 0 ;
+            let totalPrice = 0;
+            order.products.forEach(prod => {
+                count += 1;
+                pdfDoc.fontSize(16).text(
+                    count + ' - ' +
+                    prod.product.title + ' - ' +
+                    prod.quantity + 'X - ' +
+                    prod.product.price + '$ =' +
+                    prod.quantity*prod.product.price + '$' +
+                    '\n'
+                );
+                totalPrice += prod.quantity*prod.product.price;
+            })
+
+            pdfDoc.text('---------');
+            pdfDoc.fontSize(19).text(
+                'Total : ' + 
+                totalPrice + '$'
+            );
+
+
+            pdfDoc.end();
+
+            /*fs.readFile(invoicePath , (err, data) => {
                 if (err) {
                     return next(err);
                 }
@@ -224,6 +264,9 @@ exports.getInvoice = (req , res , next) => {
                     'inline; filename="' + invoiceName + '"');
                 res.send(data);
             });
+            const file = fs.createReadStream(invoicePath);
+            
+            file.pipe(res);*/
         })
         .catch(err => {
             next(err);

@@ -33,9 +33,6 @@ router.post('/edit-product',isAuth,
             .isString()
             .trim()
         ,
-        body('imageUrl')
-            .isURL()
-        ,
         body('price')
             .isFloat()
         ,

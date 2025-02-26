@@ -1,7 +1,8 @@
 const Product = require('../models/product');
-const { response } = require('express');
+const fs = require('fs');
+const path = require('path');
 const Order = require('../models/order');
-const User = require('../models/user');
+const mongoose = require('mongoose');
 
 
 exports.getIndex = (req, res, next)=>{
@@ -198,6 +199,36 @@ exports.postOrder = (req, res, next) => {
         error.httpStatusCode = 500 ;
         return next(error);
     });
+};
+
+exports.getInvoice = (req , res , next) => {
+    const orderId = req.params.orderId;
+    
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+        return next(new Error('Invalid order ID!'));
+    }
+
+    Order.findOne({'user.userId' : req.user._id , '_id' : orderId})
+        .then(order => {
+            if (!order) {
+                return next(new Error('Access denied!'));
+            }
+            const invoiceName = 'invoice-'+ orderId + '.pdf';
+            const invoicePath = path.join('data' , 'invoices' , invoiceName);
+            fs.readFile(invoicePath , (err, data) => {
+                if (err) {
+                    return next(err);
+                }
+                res.setHeader('Content-Type','application/pdf');
+                res.setHeader('Content-Disposition',
+                    'inline; filename="' + invoiceName + '"');
+                res.send(data);
+            });
+        })
+        .catch(err => {
+            next(err);
+        });
+
 };
 
 

@@ -70,16 +70,14 @@ exports.postLogin = (req, res, next) => {
                         req.session.isLoggedIn = true;
                         req.session.user = user;
                         
-                        return req.session.save
-                            .then(result => {
-                                if (result) {
-                                    res.redirect('/');
-                                }
-                            })
-                            .catch((err)=>{
+                        return req.session.save(err => {
+                            if (err) {
                                 console.log(err);
-                                res.redirect('/login');
-                            });
+                                return res.redirect('/login');
+                            }
+                            res.redirect('/');
+                        });
+                        
                     }
                     return res.status(422).render('auth/login' , {
                         path : '/login' , 
@@ -140,7 +138,7 @@ exports.postSignup = (req, res, next) => {
     const confirmPassword= req.body.confirmPassword;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors.array());
+        
         return res.status(422).render('auth/signup' , {
             pageTitle: 'Signup' ,
             path : '/signup' , 

@@ -223,14 +223,13 @@ exports.getDeleteProduct = (req, res, next)=>{
         });
 };
 
-exports.postDeleteProduct = (req, res, next)=>{
-    const id = req.body.deleteId;
+exports.deleteProduct = (req, res, next)=>{
+    const id = req.params.prodId;
     Product.findById(id)
         .then(product => {
             if (!product) {
                 return next(new Error('Product not found'));
             } 
-            
             fileHelper.deleteFile(product.imageUrl);
             return Product.deleteOne({_id : id , userId : req.user._id})
         })
@@ -238,12 +237,10 @@ exports.postDeleteProduct = (req, res, next)=>{
             if (result.deletedCount === 1) {
                 console.log("DELETED SUCCESSFULLY!");
             }
-            res.redirect("/admin/products");
+            res.status(200).json({message : 'Deleted Successfully!'});
         })
         .catch(err => {
-            const error = new Error(err);
-            error.httpStatusCode = 500 ;
-            return next(error);
+            res.status(500).json({message : 'Not Deleted!'});
         });
 };
 

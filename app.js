@@ -14,7 +14,8 @@ const flash= require('connect-flash');
 const multer = require('multer');
 
 
-const MONGODB_URI = 'mongodb+srv://UserReadWrite:<MyPAss>@cluster0.pdry4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
+const MONGODB_URI = 'mongodb+srv://UserReadWrite:<mypass>@cluster0.pdry4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 
 
@@ -129,6 +130,8 @@ app.use('/images' , express.static(path.join(__dirname, 'images')));
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+
+
 
 app.get('/test-error', (req, res, next) => {
   throw new Error('This is a test error'); // Should trigger error middleware

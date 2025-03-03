@@ -4,7 +4,7 @@ const path = require('path');
 const Order = require('../models/order');
 const mongoose = require('mongoose');
 const PDFDocument = require('pdfkit');
-const stripe = require('stripe')('sk_test_51QxrbJQSHcDwt8yxt13BIOvHkoKGmIrh1bIjz99I6BtjX42EOQRmbDJO5lLt0OKxdLmB3jlI43ufYkwS0Vl0N3UU00l1dVWKN4'); 
+const stripe = require('stripe')('sk_test'); 
 const ITEMS_PER_PAGE=2;
 
 exports.getIndex = (req, res, next)=>{

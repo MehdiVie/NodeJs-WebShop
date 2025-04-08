@@ -15,7 +15,7 @@ const multer = require('multer');
 
 
 
-const MONGODB_URI = 'mongodb+srv://UserReadWrite:<mypass>@cluster0.pdry4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = 'mongodb+srv://UserReadWrite:TcaDJEQnQYgn8TTC@cluster0.pdry4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 
 

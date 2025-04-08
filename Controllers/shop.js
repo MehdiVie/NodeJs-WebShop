@@ -4,7 +4,8 @@ const path = require('path');
 const Order = require('../models/order');
 const mongoose = require('mongoose');
 const PDFDocument = require('pdfkit');
-const stripe = require('stripe')('sk_test'); 
+require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const ITEMS_PER_PAGE=2;
 
 exports.getIndex = (req, res, next)=>{
